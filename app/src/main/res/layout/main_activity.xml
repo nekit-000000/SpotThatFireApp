@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--WorldWindow Globe panel-->
+    <FrameLayout
+        android:id="@+id/globe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
+
+        <SearchView
+            android:id="@+id/search_view"
+            android:searchIcon="@drawable/sicon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:background="@android:color/transparent"
+            android:elevation="2dp"></SearchView>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="300dp"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="right"
+            android:elevation="2dp">
+            <ImageButton
+                android:id="@+id/plus_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/plus"
+                android:layout_marginTop="80dp"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/minus_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/minus"
+                android:layout_marginTop="160dp"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:id="@+id/my_position_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/arrow"
+                android:background="@android:color/transparent" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SpotThatFireApp</string>
+    <string name="hint_search">HintSearch</string>
+</resources>
