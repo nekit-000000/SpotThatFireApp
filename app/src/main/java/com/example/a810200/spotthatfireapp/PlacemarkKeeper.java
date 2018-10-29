@@ -1,6 +1,5 @@
 package com.example.a810200.spotthatfireapp;
 
-import android.graphics.BitmapFactory;
 
 import com.example.a810200.spotthatfireapp.FireLoader.kmeans.ForestFire;
 

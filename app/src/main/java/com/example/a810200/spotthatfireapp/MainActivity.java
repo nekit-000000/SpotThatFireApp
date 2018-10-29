@@ -1,13 +1,7 @@
 package com.example.a810200.spotthatfireapp;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -18,23 +12,12 @@ import android.widget.Toast;
 import com.example.a810200.spotthatfireapp.Finder.FinderPlaces;
 import com.example.a810200.spotthatfireapp.Finder.GeomObject;
 
-import gov.nasa.worldwind.Navigator;
-import gov.nasa.worldwind.WorldWind;
-import gov.nasa.worldwind.WorldWindow;
-import gov.nasa.worldwind.geom.Camera;
-import gov.nasa.worldwind.geom.Location;
-import gov.nasa.worldwind.geom.Position;
 import gov.nasa.worldwind.layer.BackgroundLayer;
 import gov.nasa.worldwind.layer.BlueMarbleLandsatLayer;
-import gov.nasa.worldwind.layer.RenderableLayer;
-import gov.nasa.worldwind.render.ImageSource;
-import gov.nasa.worldwind.shape.Placemark;
-import gov.nasa.worldwind.shape.PlacemarkAttributes;
 
 
 public class MainActivity extends AppCompatActivity {
     SearchView searchView;
-    Placemark positionPlacemark = null;
 
     private static class SearchTask extends AsyncTask<String, Void, Void> {
         GeomObject go;
@@ -78,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void InitButtons() {
-        ImageButton plus = (ImageButton) findViewById(R.id.plus_button);
-        ImageButton minus = (ImageButton) findViewById(R.id.minus_button);
-        ImageButton myPosition = (ImageButton) findViewById(R.id.my_position_button);
+        ImageButton plus = findViewById(R.id.plus_button);
+        ImageButton minus = findViewById(R.id.minus_button);
+        ImageButton myPosition = findViewById(R.id.my_position_button);
 
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,55 +90,16 @@ public class MainActivity extends AppCompatActivity {
         myPosition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                if (positionPlacemark != null) {
-                    RenderTasks.getHandle().getNavigator().setLongitude(positionPlacemark.getPosition().longitude);
-                    RenderTasks.getHandle().getNavigator().setLatitude(positionPlacemark.getPosition().latitude);
+                if (SelfPositionManager.GetPositionPlacemark() != null) {
+                    RenderTasks.getHandle().getNavigator().setLongitude(SelfPositionManager.GetPositionPlacemark()
+                            .getPosition().longitude);
+                    RenderTasks.getHandle().getNavigator().setLatitude(SelfPositionManager.GetPositionPlacemark()
+                            .getPosition().latitude);
                     RenderTasks.getHandle().getNavigator().setAltitude(1e4);
                     RenderTasks.getHandle().requestRedraw();
                 }
             }
         });
-    }
-
-    private void InitLocationManager() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(android.location.Location location) {
-                if (positionPlacemark == null) {
-                    positionPlacemark = new Placemark( Position.fromDegrees(location.getLatitude(),
-                            location.getLongitude(), 0), PlacemarkAttributes.
-                            createWithImageAndLeader(ImageSource.fromResource(R.drawable.location)).
-                            setImageScale(PlacemarkKeeper.CountPlacemarkScale(RenderTasks.getHandle().
-                                    getNavigator().getAltitude())));
-
-                    RenderableLayer posLayer = new RenderableLayer("MyPosition");
-                    RenderTasks.getHandle().getLayers().addLayer(posLayer);
-
-                    posLayer.addRenderable(positionPlacemark);
-
-                    return;
-                }
-
-                Position pos = new Position();
-                pos.latitude = location.getLatitude();
-                pos.longitude = location.getLongitude();
-                positionPlacemark.setPosition(pos);
-
-                RenderTasks.getHandle().requestRedraw();
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-            public void onProviderEnabled(String provider) {}
-
-            public void onProviderDisabled(String provider) {}
-        };
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        }
     }
 
     @Override
@@ -174,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout globeLayout = findViewById(R.id.globe);
         globeLayout.addView(RenderTasks.getHandle());
 
-        InitLocationManager();
+        SelfPositionManager.Init(this);
         InitSearvhView();
         InitButtons();
     }
