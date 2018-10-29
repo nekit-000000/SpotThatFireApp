@@ -2,6 +2,9 @@ package com.example.a810200.spotthatfireapp;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,8 +20,6 @@ import gov.nasa.worldwind.layer.BlueMarbleLandsatLayer;
 
 
 public class MainActivity extends AppCompatActivity {
-    SearchView searchView;
-
     private static class SearchTask extends AsyncTask<String, Void, Void> {
         GeomObject go;
 
@@ -41,10 +42,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private  void InitSearvhView() {
-        searchView = findViewById(R.id.search_view);
+    private  void InitSearchView() {
+        SearchView searchView = findViewById(R.id.search_view);
         searchView.setMaxWidth( Integer.MAX_VALUE );
+
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageButton menu = findViewById(R.id.open_menu_button);
+                menu.setVisibility(View.GONE);
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                ImageButton menu = findViewById(R.id.open_menu_button);
+                menu.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
                 new SearchTask().execute(query);
@@ -64,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton plus = findViewById(R.id.plus_button);
         ImageButton minus = findViewById(R.id.minus_button);
         ImageButton myPosition = findViewById(R.id.my_position_button);
+        ImageButton menu = findViewById(R.id.open_menu_button);
 
         plus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +121,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
     }
 
     @Override
@@ -119,7 +148,10 @@ public class MainActivity extends AppCompatActivity {
         globeLayout.addView(RenderTasks.getHandle());
 
         SelfPositionManager.Init(this);
-        InitSearvhView();
+        InitSearchView();
         InitButtons();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setItemIconTintList(null);
     }
 }
